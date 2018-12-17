@@ -187,12 +187,7 @@ $4000110C constant _NRF_RADIO__EVENTS_END
 
 : transmitUntilAcked 0 begin 1+ transmitTxBuffer dup reachedRetransmissionLimit? waitForAck dup <bool_ackReceived?> ! or until drop ;
 
-\ Print the payload counter followed by the payload alpha character
-\ (  --  )
-\
-: print<2uByte_receivedPayload> <1uByte_receivedCounter> @ . <char_receivedChar> @ emit CR ;
-
-: printReceivedChar <char_receivedChar> @ showKey ;
+\ : printReceivedChar <char_receivedChar> @ showKey ;
 
 
 : parseReceivedPayload rxRadioBuffer listAddr@b0 <1uByte_receivedCounter> ! rxRadioBuffer listAddr@b1 <char_receivedChar> ! ;
@@ -210,7 +205,7 @@ $4000110C constant _NRF_RADIO__EVENTS_END
 
 : storeReceivedPayload rxRadioBuffer @ <2uByte_receivedPayload> ! ;
 
-: receive begin receiveIntoRxBuffer storeReceivedPayload send_ACK parseReceivedPayload duplicateCounter? not if updatePreviousReceivedCounter then printReceivedChar again ;
+\ : receive begin receiveIntoRxBuffer storeReceivedPayload send_ACK parseReceivedPayload duplicateCounter? not if updatePreviousReceivedCounter then printReceivedChar again ;
 
 : installTerminalIdentity true <bool_terminalNode?> ! ;
 
@@ -243,7 +238,7 @@ $4000110C constant _NRF_RADIO__EVENTS_END
 : processReceivedPacket? send_ACK storeReceivedPayload  parseReceivedPayload duplicateCounter? not dup if updatePreviousReceivedCounter then ; 
 
 \ ( -- )
-: manageReceivedPacket processReceivedPacket? if showKeyReceived then ;
+: manageReceivedPacket processReceivedPacket? if <bool_terminalNode?> @ if showKeyReceived then then ;
 
 \ ( char -- )
 \
